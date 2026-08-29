@@ -37,20 +37,7 @@
             font-size: 1.2rem;
             font-weight: 700;
             color: #ffd700;
-            letter-spacing: 1px;
         }
-        .btn-admin-login {
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        .btn-admin-login:hover { background-color: #ff4444; transform: scale(1.05); }
         .main-container { width: 100%; max-width: 1100px; display: flex; flex-direction: column; gap: 30px; }
         .player-section {
             background-color: #112240;
@@ -58,7 +45,6 @@
             padding: 20px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             border: 1px solid #1e3a5f;
-            max-width: 100%;
         }
         .player-title { font-size: 1.4rem; margin-bottom: 15px; color: #ffd700; text-align: center; }
         .video-container {
@@ -69,7 +55,6 @@
             overflow: hidden;
             border-radius: 12px;
             background-color: #000;
-            min-height: 300px;
         }
         .video-container iframe {
             position: absolute;
@@ -84,7 +69,7 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             border: 1px solid #1e3a5f;
         }
-        .schedule-title { text-align: center; font-size: 1.5rem; margin-bottom: 20px; color: #a0c4ff; letter-spacing: 1px; font-weight: 600; }
+        .schedule-title { text-align: center; font-size: 1.5rem; margin-bottom: 20px; color: #a0c4ff; font-weight: 600; }
         .schedule-table { width: 100%; border-collapse: collapse; font-size: 1rem; }
         .schedule-table th {
             background-color: #1e3a5f;
@@ -104,106 +89,22 @@
             border-radius: 15px;
             font-size: 0.8rem;
             font-weight: 700;
-            white-space: nowrap;
-            text-align: center;
             display: inline-block;
             min-width: 80px;
+            text-align: center;
         }
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
         .notice { text-align: center; color: #5a7a9a; font-size: 0.85rem; margin-top: 15px; font-style: italic; }
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
-        .admin-panel {
-            display: none;
-            background-color: #1a0a0a;
-            border: 2px solid #ff6b6b;
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-        .admin-panel.visible { display: block; }
-        .admin-panel h3 { color: #ff6b6b; margin-bottom: 15px; text-align: center; }
-        .admin-buttons { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-        .btn-admin {
-            background-color: #2a4a7a;
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-        .btn-admin:hover { background-color: #ff6b6b; }
-        .btn-admin.active { background-color: #ff6b6b; }
-        .btn-admin-logout {
-            background-color: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-top: 10px;
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-overlay.visible { display: flex !important; }
-        .modal-box {
-            background-color: #112240;
-            border: 2px solid #ffd700;
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        .modal-box h3 { color: #ffd700; margin-bottom: 15px; }
-        .modal-box input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            border: 2px solid #2a4a7a;
-            background-color: #0a192f;
-            color: white;
-            font-size: 1.1rem;
-            text-align: center;
-            margin-bottom: 15px;
-            outline: none;
-        }
-        .modal-box button {
-            background-color: #ffd700;
-            color: #0a192f;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 1rem;
-            margin: 5px;
-        }
-        .modal-box .btn-cancel { background-color: #2a4a7a; color: white; }
-        .error-msg { color: #ff6b6b; font-size: 0.9rem; margin-top: 10px; display: none; }
-        .error-msg.visible { display: block; }
         @media (max-width: 600px) {
             body { padding: 10px; }
             .header h1 { font-size: 1.5rem; }
             .schedule-table { font-size: 0.85rem; }
             .time-cell { min-width: 90px; font-size: 0.8rem; }
             .clock { font-size: 1rem; padding: 8px 15px; }
-            .btn-admin { padding: 8px 12px; font-size: 0.75rem; }
-            .video-container { min-height: 200px; }
-            .btn-admin-login { padding: 8px 12px; font-size: 0.75rem; }
+            .schedule-table th, .schedule-table td { padding: 8px 6px; }
         }
     </style>
 </head>
@@ -211,10 +112,7 @@
 
     <div class="header">
         <h1>MY <span>HOME</span> 📺</h1>
-        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <div class="clock" id="clock">00:00:00</div>
-            <button class="btn-admin-login" onclick="document.getElementById('modalOverlay').classList.add('visible')">🔐 Вход</button>
-        </div>
+        <div class="clock" id="clock">00:00:00</div>
     </div>
 
     <div class="main-container">
@@ -226,14 +124,6 @@
             <div class="notice">🔒 Просмотр доступен только по расписанию</div>
         </div>
 
-        <div class="admin-panel" id="adminPanel">
-            <h3>🔐 Режим администратора</h3>
-            <div class="admin-buttons" id="adminButtons"></div>
-            <div style="text-align: center;">
-                <button class="btn-admin-logout" onclick="logoutAdmin()">🚪 Выйти</button>
-            </div>
-        </div>
-
         <div class="schedule-container">
             <div class="schedule-title">📅 Расписание эфира</div>
             <table class="schedule-table">
@@ -243,40 +133,30 @@
         </div>
     </div>
 
-    <div class="footer">MY HOME • Телеканал для детей</div>
-
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-box">
-            <h3>🔐 Введите пароль</h3>
-            <input type="password" id="passwordInput" placeholder="Пароль..." onkeydown="if(event.key==='Enter')checkPassword()">
-            <div>
-                <button onclick="checkPassword()">Войти</button>
-                <button class="btn-cancel" onclick="document.getElementById('modalOverlay').classList.remove('visible')">Отмена</button>
-            </div>
-            <div class="error-msg" id="errorMsg">❌ Неверный пароль!</div>
-        </div>
-    </div>
+    <div class="footer">MY HOME • Телеканал для детей • Автопоказ по расписанию</div>
 
     <script>
-        // ПРОСТОЙ СКРИПТ БЕЗ YOUTUBE API
-        var ADMIN_PASSWORD = "28013";
         var schedule = [
-            { start: { h: 6, m: 0 }, end: { h: 7, m: 30 }, title: "Губка Боб", videoIds: ["83gzUfs8VU4"] },
-            { start: { h: 7, m: 30 }, end: { h: 8, m: 0 }, title: "Три кота", videoIds: ["C4sX4HvxgmY"] },
-            { start: { h: 8, m: 0 }, end: { h: 9, m: 15 }, title: "Мими Мишки", videoIds: ["XEzMTmC1r1w"] },
-            { start: { h: 9, m: 15 }, end: { h: 10, m: 0 }, title: "Медведь Валера", videoIds: ["C6Z2Zuq74gg", "mpjb-thhmeM"] },
-            { start: { h: 10, m: 0 }, end: { h: 10, m: 30 }, title: "Ералаш", videoIds: ["PZSkHSWnu1g"] },
-            { start: { h: 10, m: 30 }, end: { h: 12, m: 0 }, title: "Маша и Медведь", videoIds: ["dL2O7GMG3xQ"] },
-            { start: { h: 12, m: 0 }, end: { h: 12, m: 30 }, title: "Дельфинёнок Муму", videoIds: ["YwGxJJAIf80"] },
-            { start: { h: 12, m: 30 }, end: { h: 13, m: 15 }, title: "Барбоскины", videoIds: ["9CDdPPlsUkk"] },
-            { start: { h: 13, m: 15 }, end: { h: 14, m: 0 }, title: "Baby Shark", videoIds: ["kjCfzGzqlWA"] }
+            { start: { h: 6, m: 0 }, end: { h: 7, m: 30 }, title: "Губка Боб Квадратные Штаны", videoId: "83gzUfs8VU4" },
+            { start: { h: 7, m: 30 }, end: { h: 8, m: 0 }, title: "Три кота", videoId: "C4sX4HvxgmY" },
+            { start: { h: 8, m: 0 }, end: { h: 9, m: 15 }, title: "Мими Мишки", videoId: "XEzMTmC1r1w" },
+            { start: { h: 9, m: 15 }, end: { h: 10, m: 0 }, title: "Медведь Валера", videoId: "C6Z2Zuq74gg" },
+            { start: { h: 10, m: 0 }, end: { h: 10, m: 30 }, title: "Ералаш", videoId: "PZSkHSWnu1g" },
+            { start: { h: 10, m: 30 }, end: { h: 12, m: 0 }, title: "Маша и Медведь", videoId: "dL2O7GMG3xQ" },
+            { start: { h: 12, m: 0 }, end: { h: 12, m: 30 }, title: "Приключения дельфинёнка Муму", videoId: "YwGxJJAIf80" },
+            { start: { h: 12, m: 30 }, end: { h: 13, m: 15 }, title: "Барбоскины", videoId: "9CDdPPlsUkk" },
+            { start: { h: 13, m: 15 }, end: { h: 14, m: 0 }, title: "Baby Shark", videoId: "kjCfzGzqlWA" },
+            { start: { h: 14, m: 0 }, end: { h: 15, m: 0 }, title: "Простоквашино", videoId: "t9tcwoIEp5s" },
+            { start: { h: 15, m: 0 }, end: { h: 17, m: 0 }, title: "Фиксики", videoId: "nyXgRvMxCQY" },
+            { start: { h: 17, m: 0 }, end: { h: 18, m: 0 }, title: "Сказочный патруль", videoId: "jzarHfhHG8c" },
+            { start: { h: 18, m: 0 }, end: { h: 19, m: 45 }, title: "Смешарики", videoId: "SOvrw-rysuQ" },
+            { start: { h: 19, m: 45 }, end: { h: 21, m: 0 }, title: "Белка и Стрелка", videoId: "-0CD5-XMqvI" }
         ];
 
         function pad(n){return String(n).padStart(2,'0')}
         function timeToMinutes(h,m){return h*60+m}
         function formatTime(h,m){return pad(h)+":"+pad(m)}
-        
-        // Часы
+
         function updateClock(){
             var now = new Date();
             document.getElementById('clock').textContent = pad(now.getHours())+":"+pad(now.getMinutes())+":"+pad(now.getSeconds());
@@ -284,7 +164,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Построение расписания
         function buildSchedule(){
             var html = '';
             schedule.forEach(function(item){
@@ -295,42 +174,10 @@
         }
         buildSchedule();
 
-        // Проверка пароля
-        function checkPassword(){
-            var input = document.getElementById('passwordInput').value;
-            if(input === ADMIN_PASSWORD){
-                document.getElementById('modalOverlay').classList.remove('visible');
-                document.getElementById('adminPanel').classList.add('visible');
-                buildAdminButtons();
-            } else {
-                document.getElementById('errorMsg').classList.add('visible');
-                document.getElementById('passwordInput').value = '';
-            }
-        }
-
-        // Выход из админки
-        function logoutAdmin(){
-            document.getElementById('adminPanel').classList.remove('visible');
-        }
-
-        // Кнопки админа
-        function buildAdminButtons(){
-            var html = '';
-            schedule.forEach(function(item, index){
-                html += '<button class="btn-admin" onclick="playVideo('+index+',0)">'+item.title+'</button>';
-            });
-            document.getElementById('adminButtons').innerHTML = html;
-        }
-
-        // Включение видео
-        function playVideo(index, videoIndex){
-            var item = schedule[index];
-            var videoId = item.videoIds[videoIndex];
-            if(!videoId) return;
+        function playVideo(item){
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
-            document.getElementById('videoFrame').src = 'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+            document.getElementById('videoFrame').src = 'https://www.youtube.com/embed/' + item.videoId + '?autoplay=1';
             
-            // Обновление статусов
             schedule.forEach(function(s){
                 var id = s.title.replace(/\s+/g,'-');
                 var el = document.getElementById('status-'+id);
@@ -341,7 +188,6 @@
             });
         }
 
-        // Автопоказ по расписанию
         function checkSchedule(){
             var now = new Date();
             var nowMinutes = timeToMinutes(now.getHours(), now.getMinutes());
@@ -355,14 +201,18 @@
                     var id = item.title.replace(/\s+/g,'-');
                     var statusEl = document.getElementById('status-'+id);
                     if(statusEl && statusEl.textContent !== '▶ Идёт'){
-                        playVideo(i, 0);
+                        playVideo(item);
                     }
                     return;
                 }
             }
+            
+            document.getElementById('playerTitle').textContent = '⏸ Эфир завершён. Смотрите нас завтра с 6:00!';
+            document.getElementById('videoFrame').src = '';
         }
         setInterval(checkSchedule, 30000);
         checkSchedule();
     </script>
+
 </body>
 </html>
