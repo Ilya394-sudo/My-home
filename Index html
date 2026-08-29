@@ -1,0 +1,687 @@
+
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY HOME — Детский телеканал</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a192f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0 20px 0;
+            border-bottom: 2px solid #1e3a5f;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .header h1 span {
+            color: #ffd700;
+        }
+
+        .clock {
+            background-color: #1e3a5f;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffd700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s;
+        }
+
+        .clock:hover {
+            background-color: #2a4a7a;
+        }
+
+        /* СКРЫТАЯ КНОПКА АДМИНА */
+        .admin-login-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1e3a5f;
+            border: 1px solid #2a4a7a;
+            color: #5a7a9a;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.3;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .admin-login-btn:hover {
+            opacity: 1;
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .player-section {
+            background-color: #112240;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1e3a5f;
+            max-width: 100%;
+        }
+
+        .player-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #000;
+            min-height: 500px;
+        }
+
+        .video-container #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            pointer-events: none;
+        }
+
+        .schedule-container {
+            background-color: #112240;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1e3a5f;
+        }
+
+        .schedule-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #a0c4ff;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+
+        .schedule-table th {
+            background-color: #1e3a5f;
+            color: #ffffff;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            border-bottom: 2px solid #2a4a7a;
+        }
+
+        .schedule-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #1e3a5f;
+            transition: background-color 0.3s;
+        }
+
+        .schedule-table tr:hover td {
+            background-color: #1a2f4a;
+        }
+
+        .time-cell {
+            font-weight: 700;
+            color: #ffd700;
+            white-space: nowrap;
+            min-width: 130px;
+        }
+
+        .show-cell {
+            font-weight: 500;
+        }
+
+        .status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            white-space: nowrap;
+            text-align: center;
+            display: inline-block;
+            min-width: 80px;
+        }
+
+        .status.active {
+            background-color: #ff6b6b;
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        .status.upcoming {
+            background-color: #2a4a7a;
+            color: #a0c4ff;
+        }
+
+        .status.ended {
+            background-color: #1a2f4a;
+            color: #5a7a9a;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .notice {
+            text-align: center;
+            color: #5a7a9a;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #5a7a9a;
+            text-align: center;
+            padding: 15px;
+        }
+
+        /* АДМИН-ПАНЕЛЬ */
+        .admin-panel {
+            display: none;
+            background-color: #1a0a0a;
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .admin-panel.visible {
+            display: block;
+        }
+
+        .admin-panel h3 {
+            color: #ff6b6b;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .admin-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-admin {
+            background-color: #2a4a7a;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+
+        .btn-admin:hover {
+            background-color: #ff6b6b;
+            transform: scale(1.05);
+        }
+
+        .btn-admin.active {
+            background-color: #ff6b6b;
+        }
+
+        .btn-admin-logout {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+
+        /* МОДАЛЬНОЕ ОКНО ДЛЯ ПАРОЛЯ */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.visible {
+            display: flex;
+        }
+
+        .modal-box {
+            background-color: #112240;
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-box h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+        }
+
+        .modal-box input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #2a4a7a;
+            background-color: #0a192f;
+            color: white;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .modal-box input:focus {
+            border-color: #ffd700;
+        }
+
+        .modal-box button {
+            background-color: #ffd700;
+            color: #0a192f;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 5px;
+        }
+
+        .modal-box button:hover {
+            background-color: #ffed4a;
+        }
+
+        .modal-box .btn-cancel {
+            background-color: #2a4a7a;
+            color: white;
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-msg.visible {
+            display: block;
+        }
+
+        @media (min-width: 768px) {
+            .video-container {
+                padding-bottom: 0;
+                height: 600px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .video-container {
+                height: 700px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .schedule-table {
+                font-size: 0.85rem;
+            }
+            .schedule-table th,
+            .schedule-table td {
+                padding: 8px 6px;
+            }
+            .time-cell {
+                min-width: 90px;
+                font-size: 0.8rem;
+            }
+            .clock {
+                font-size: 1rem;
+                padding: 8px 15px;
+            }
+            .btn-admin {
+                padding: 8px 12px;
+                font-size: 0.75rem;
+            }
+            .video-container {
+                min-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>MY <span>HOME</span> 📺</h1>
+        <div class="clock" id="clock" title="Нажмите 5 раз для входа">00:00:00</div>
+    </div>
+
+    <!-- СКРЫТАЯ КНОПКА ВХОДА (внизу справа) -->
+    <button class="admin-login-btn" id="adminLoginBtn" onclick="openModal()" title="Вход для администратора">🔐</button>
+
+    <div class="main-container">
+
+        <!-- ПЛЕЕР -->
+        <div class="player-section">
+            <div class="player-title" id="playerTitle">⏳ Ожидание эфира...</div>
+            <div class="video-container">
+                <div id="player"></div>
+            </div>
+            <div class="notice" id="noticeText">🔒 Просмотр доступен только по расписанию</div>
+        </div>
+
+        <!-- АДМИН-ПАНЕЛЬ (скрыта) -->
+        <div class="admin-panel" id="adminPanel">
+            <h3>🔐 Режим администратора</h3>
+            <div class="admin-buttons" id="adminButtons">
+                <!-- Кнопки будут созданы автоматически -->
+            </div>
+            <div style="text-align: center;">
+                <button class="btn-admin-logout" onclick="logoutAdmin()">🚪 Выйти из админ-режима</button>
+            </div>
+        </div>
+
+        <!-- РАСПИСАНИЕ -->
+        <div class="schedule-container">
+            <div class="schedule-title">📅 Расписание эфира</div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Время</th>
+                        <th>Мультфильм</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
+                <tbody id="scheduleBody">
+                    <!-- Расписание будет здесь -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        MY HOME • Телеканал для детей • Автопоказ по расписанию
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ВВОДА ПАРОЛЯ -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box">
+            <h3>🔐 Введите пароль администратора</h3>
+            <input type="password" id="passwordInput" placeholder="Пароль..." onkeydown="if(event.key === 'Enter') checkPassword()">
+            <div>
+                <button onclick="checkPassword()">Войти</button>
+                <button class="btn-cancel" onclick="closeModal()">Отмена</button>
+            </div>
+            <div class="error-msg" id="errorMsg">❌ Неверный пароль!</div>
+        </div>
+    </div>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        // ============================================
+        // НАСТРОЙКИ
+        // ============================================
+        const ADMIN_PASSWORD = "28013";
+        const CLICK_COUNT_TO_OPEN = 5;
+
+        // ============================================
+        // РАСПИСАНИЕ ЭФИРА
+        // ============================================
+        const schedule = [
+            {
+                start: { h: 6, m: 0 },
+                end: { h: 7, m: 30 },
+                title: "Губка Боб Квадратные Штаны",
+                videoIds: ["83gzUfs8VU4"]
+            },
+            {
+                start: { h: 7, m: 30 },
+                end: { h: 8, m: 0 },
+                title: "Три кота",
+                videoIds: ["C4sX4HvxgmY"]
+            },
+            {
+                start: { h: 8, m: 0 },
+                end: { h: 9, m: 15 },
+                title: "Мими Мишки",
+                videoIds: ["XEzMTmC1r1w"]
+            },
+            {
+                start: { h: 9, m: 15 },
+                end: { h: 10, m: 0 },
+                title: "Медведь Валера",
+                videoIds: ["C6Z2Zuq74gg", "mpjb-thhmeM"]
+            },
+            {
+                start: { h: 10, m: 0 },
+                end: { h: 10, m: 30 },
+                title: "Ералаш",
+                videoIds: ["PZSkHSWnu1g"]
+            },
+            {
+                start: { h: 10, m: 30 },
+                end: { h: 12, m: 0 },
+                title: "Маша и Медведь",
+                videoIds: ["dL2O7GMG3xQ"]
+            },
+            {
+                start: { h: 12, m: 0 },
+                end: { h: 12, m: 30 },
+                title: "Приключения дельфинёнка Муму",
+                videoIds: ["YwGxJJAIf80"]
+            },
+            {
+                start: { h: 12, m: 30 },
+                end: { h: 13, m: 15 },
+                title: "Барбоскины",
+                videoIds: ["9CDdPPlsUkk"]
+            },
+            {
+                start: { h: 13, m: 15 },
+                end: { h: 14, m: 0 },
+                title: "Baby Shark (русская озвучка)",
+                videoIds: ["kjCfzGzqlWA"]
+            }
+        ];
+
+        // ============================================
+        // ПЕРЕМЕННЫЕ
+        // ============================================
+        const playerTitle = document.getElementById('playerTitle');
+        const clockEl = document.getElementById('clock');
+        const scheduleBody = document.getElementById('scheduleBody');
+        const adminPanel = document.getElementById('adminPanel');
+        const adminButtons = document.getElementById('adminButtons');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const passwordInput = document.getElementById('passwordInput');
+        const errorMsg = document.getElementById('errorMsg');
+        const noticeText = document.getElementById('noticeText');
+        
+        let player = null;
+        let currentShowTitle = null;
+        let currentVideoIndex = 0;
+        let isPlayerReady = false;
+        let isAdmin = false;
+        let clickCount = 0;
+        let clickTimer = null;
+        let adminOverride = false;
+
+        // ============================================
+        // ФУНКЦИИ
+        // ============================================
+        function pad(num) {
+            return String(num).padStart(2, '0');
+        }
+
+        function timeToMinutes(h, m) {
+            return h * 60 + m;
+        }
+
+        function formatTime(h, m) {
+            return `${pad(h)}:${pad(m)}`;
+        }
+
+        function updateClock() {
+            const now = new Date();
+            clockEl.textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Счётчик кликов по часам
+        clockEl.addEventListener('click', function() {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 3000);
+            
+            if (clickCount >= CLICK_COUNT_TO_OPEN) {
+                clickCount = 0;
+                if (!isAdmin) {
+                    openModal();
+                }
+            }
+        });
+
+        function openModal() {
+            modalOverlay.classList.add('visible');
+            passwordInput.value = '';
+            errorMsg.classList.remove('visible');
+            passwordInput.focus();
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('visible');
+        }
+
+        function checkPassword() {
+            if (passwordInput.value === ADMIN_PASSWORD) {
+                isAdmin = true;
+                closeModal();
+                showAdminPanel();
+                noticeText.textContent = '🔓 Режим администратора активен';
+            } else {
+                errorMsg.classList.add('visible');
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            adminOverride = false;
+            adminPanel.classList.remove('visible');
+            noticeText.textContent = '🔒 Просмотр доступен только по расписанию';
+            checkSchedule();
+        }
+
+        function showAdminPanel() {
+            adminPanel.classList.add('visible');
+            buildAdminButtons();
+        }
+
+        function buildAdminButtons() {
+            adminButtons.innerHTML = '';
+            schedule.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-admin';
+                btn.textContent = item.title;
+                btn.onclick = function() {
+                    adminOverride = true;
+                    currentShowTitle = item.title;
+                    currentVideoIndex = 0;
+                    playVideo(item, 0);
+                    updateStatuses(item);
+                    
+                    document.querySelectorAll('.btn-admin').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                };
+                adminButtons.appendChild(btn);
+            });
+        }
+
+        function buildSchedule() {
+            scheduleBody.innerHTML = '';
+            schedule.forEach(item => {
+                const row = document.cr
