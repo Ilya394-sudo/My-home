@@ -1,4 +1,5 @@
-Готово! Вот полный код с увеличенным окном плеера:
+
+
 
 ```html
 <!DOCTYPE html>
@@ -57,8 +58,40 @@
             font-weight: 700;
             color: #ffd700;
             letter-spacing: 1px;
-            cursor: default;
+            cursor: pointer;
             user-select: none;
+            transition: all 0.3s;
+        }
+
+        .clock:hover {
+            background-color: #2a4a7a;
+        }
+
+        /* СКРЫТАЯ КНОПКА АДМИНА */
+        .admin-login-btn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1e3a5f;
+            border: 1px solid #2a4a7a;
+            color: #5a7a9a;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.3;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .admin-login-btn:hover {
+            opacity: 1;
+            background-color: #ff6b6b;
+            color: white;
         }
 
         .main-container {
@@ -351,7 +384,6 @@
             display: block;
         }
 
-        /* Увеличенное окно плеера для компьютера */
         @media (min-width: 768px) {
             .video-container {
                 padding-bottom: 0;
@@ -401,8 +433,11 @@
 
     <div class="header">
         <h1>MY <span>HOME</span> 📺</h1>
-        <div class="clock" id="clock" title="">00:00:00</div>
+        <div class="clock" id="clock" title="Нажмите 5 раз для входа">00:00:00</div>
     </div>
+
+    <!-- СКРЫТАЯ КНОПКА ВХОДА (внизу справа) -->
+    <button class="admin-login-btn" id="adminLoginBtn" onclick="openModal()" title="Вход для администратора">🔐</button>
 
     <div class="main-container">
 
@@ -469,12 +504,11 @@
         // ============================================
         // НАСТРОЙКИ
         // ============================================
-        const ADMIN_PASSWORD = "28013"; // Ваш пароль
-        const CLICK_COUNT_TO_OPEN = 5; // Сколько раз нажать на часы
+        const ADMIN_PASSWORD = "28013";
+        const CLICK_COUNT_TO_OPEN = 5;
 
         // ============================================
         // РАСПИСАНИЕ ЭФИРА
-        // Время подобрано под длительность мультфильмов
         // ============================================
         const schedule = [
             {
@@ -651,39 +685,4 @@
         function buildSchedule() {
             scheduleBody.innerHTML = '';
             schedule.forEach(item => {
-                const row = document.createElement('tr');
-                const id = item.title.replace(/\s+/g, '-');
-                row.id = `row-${id}`;
-                row.innerHTML = `
-                    <td class="time-cell">${formatTime(item.start.h, item.start.m)} – ${formatTime(item.end.h, item.end.m)}</td>
-                    <td class="show-cell">${item.title}</td>
-                    <td><span class="status upcoming" id="status-${id}">Ожидание</span></td>
-                `;
-                scheduleBody.appendChild(row);
-            });
-        }
-
-        function getCurrentShow() {
-            const now = new Date();
-            const nowMinutes = timeToMinutes(now.getHours(), now.getMinutes());
-            
-            for (const item of schedule) {
-                const startMinutes = timeToMinutes(item.start.h, item.start.m);
-                const endMinutes = timeToMinutes(item.end.h, item.end.m);
-                
-                if (nowMinutes >= startMinutes && nowMinutes < endMinutes) {
-                    return item;
-                }
-            }
-            return null;
-        }
-
-        function updateStatuses(currentShow) {
-            const now = new Date();
-            const nowMinutes = timeToMinutes(now.getHours(), now.getMinutes());
-            
-            schedule.forEach(item => {
-                const id = item.title.replace(/\s+/g, '-');
-                const statusEl = document.getElementById(`status-${id}`);
-                const startMinutes = timeToMinutes(item.start.h, item.start.m);
-            
+                const row = document.cr
