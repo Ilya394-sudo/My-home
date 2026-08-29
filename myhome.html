@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY HOME — Детский телеканал</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a192f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0 20px 0;
+            border-bottom: 2px solid #1e3a5f;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .header h1 span {
+            color: #ffd700;
+        }
+
+        .now-playing {
+            background-color: #1e3a5f;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            color: #a0c4ff;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* ПЛЕЕР */
+        .player-section {
+            background-color: #112240;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1e3a5f;
+        }
+
+        .player-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #ffd700;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #000;
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* РАСПИСАНИЕ */
+        .schedule-container {
+            background-color: #112240;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 1px solid #1e3a5f;
+        }
+
+        .schedule-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #a0c4ff;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+
+        .schedule-table th {
+            background-color: #1e3a5f;
+            color: #ffffff;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            border-bottom: 2px solid #2a4a7a;
+        }
+
+        .schedule-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #1e3a5f;
+            transition: background-color 0.3s;
+        }
+
+        .schedule-table tr:hover td {
+            background-color: #1a2f4a;
+        }
+
+        .time-cell {
+            font-weight: 700;
+            color: #ffd700;
+            white-space: nowrap;
+            min-width: 130px;
+        }
+
+        .show-cell {
+            font-weight: 500;
+        }
+
+        .btn-watch {
+            background-color: #ffd700;
+            color: #0a192f;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-watch:hover {
+            background-color: #ffed4a;
+            transform: scale(1.05);
+        }
+
+        .btn-watch.active {
+            background-color: #ff6b6b;
+            color: white;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: #5a7a9a;
+            text-align: center;
+            padding: 15px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .schedule-table {
+                font-size: 0.85rem;
+            }
+            .schedule-table th,
+            .schedule-table td {
+                padding: 8px 6px;
+            }
+            .time-cell {
+                min-width: 90px;
+                font-size: 0.8rem;
+            }
+            .btn-watch {
+                padding: 5px 12px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>MY <span>HOME</span> 📺</h1>
+        <div class="now-playing">🎬 Детский телеканал</div>
+    </div>
+
+    <div class="main-container">
+
+        <!-- ПЛЕЕР -->
+        <div class="player-section">
+            <div class="player-title" id="playerTitle">▶ Сейчас играет: Губка Боб</div>
+            <div class="video-container">
+                <iframe id="videoPlayer" 
+                        src="https://www.youtube.com/embed/VIDEO_ID_1"
+                        title="Мультфильм"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <!-- РАСПИСАНИЕ -->
+        <div class="schedule-container">
+            <div class="schedule-title">📅 Расписание мультфильмов</div>
+            <table class="schedule-table">
+                <thead>
+                    <tr>
+                        <th>Время</th>
+                        <th>Мультфильм</th>
+                        <th>Действие</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="time-cell">6:00 – 7:30</td>
+                        <td class="show-cell">Губка Боб Квадратные Штаны</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_1', 'Губка Боб')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">7:30 – 8:00</td>
+                        <td class="show-cell">Три кота</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_2', 'Три кота')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">8:00 – 9:15</td>
+                        <td class="show-cell">Мими Мишки</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_3', 'Мими Мишки')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">9:15 – 10:00</td>
+                        <td class="show-cell">Медведь Валера</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_4', 'Медведь Валера')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">10:00 – 10:30</td>
+                        <td class="show-cell">Ералаш</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_5', 'Ералаш')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">10:30 – 12:00</td>
+                        <td class="show-cell">Маша и Медведь</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_6', 'Маша и Медведь')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">12:00 – 12:30</td>
+                        <td class="show-cell">Приключения дельфинёнка Муму</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_7', 'Дельфинёнок Муму')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">12:30 – 13:15</td>
+                        <td class="show-cell">Барбоскины</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_8', 'Барбоскины')">▶ Смотреть</button></td>
+                    </tr>
+                    <tr>
+                        <td class="time-cell">13:15 – 14:00</td>
+                        <td class="show-cell">Baby Shark (русская озвучка)</td>
+                        <td><button class="btn-watch" onclick="playVideo('VIDEO_ID_9', 'Baby Shark')">▶ Смотреть</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        MY HOME • Домашний телеканал для детей • Работает без VPN
+    </div>
+
+    <script>
+        function playVideo(videoId, title) {
+            const player = document.getElementById('videoPlayer');
+            const playerTitle = document.getElementById('playerTitle');
+            
+            // Меняем src iframe
+            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            
+            // Обновляем заголовок плеера
+            playerTitle.textContent = `▶ Сейчас играет: ${title}`;
+            
+            // Подсвечиваем активную кнопку
+            document.querySelectorAll('.btn-watch').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Плавно скроллим к плееру на мобильных
+            document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+  </html>
