@@ -96,6 +96,8 @@
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
+        
+        /* АРХИВ */
         .archive-container {
             background-color: #0d1a2d;
             border-radius: 20px;
@@ -103,39 +105,64 @@
             border: 1px solid #2a4a7a;
         }
         .archive-title { text-align: center; font-size: 1.5rem; margin-bottom: 20px; color: #ffd700; font-weight: 600; }
+        
+        /* Стили для ЛОГОТИПА-КАРТИНКИ как заголовка архива */
+        .archive-logo-wrapper {
+            background-color: #0d1a2d; /* Темно-синий фон как у всего архива */
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 2px dashed #2a4a7a; /* Пунктирная рамка чтобы выделить */
+        }
+        .archive-logo-img {
+            max-width: 100%;
+            height: auto;
+            max-height: 150px; /* Максимальная высота логотипа */
+            display: inline-block;
+            
+            /* Хитрость: делаем белый фон картинки прозрачным, чтобы смешался с синим */
+            mix-blend-mode: screen; 
+            filter: brightness(1.1) drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
+        }
+        
         .archive-list { list-style: none; padding: 0; }
         .archive-list li {
             background-color: #1a2f4a;
-            padding: 12px 15px;
+            padding: 15px;
             border-radius: 10px;
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
             flex-wrap: wrap;
         }
-        .archive-list li .archive-info { display: flex; flex-direction: column; gap: 5px; }
-        .archive-list li .archive-time { color: #5a7a9a; font-size: 0.85rem; }
+        .archive-info { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
+        .archive-info .archive-name { font-weight: 700; font-size: 1rem; }
+        .archive-info .archive-time { color: #5a7a9a; font-size: 0.8rem; }
+        
         .btn-play-archive {
             background-color: #ff6b6b;
             color: white;
             border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
+            padding: 12px 20px;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             transition: all 0.3s;
             white-space: nowrap;
         }
         .btn-play-archive:hover {
             background-color: #ff4444;
             transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(255,107,107,0.4);
         }
         .btn-play-archive:active {
             transform: scale(0.95);
         }
+        
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -143,7 +170,9 @@
             .schedule-table { font-size: 0.85rem; }
             .time-cell { min-width: 90px; font-size: 0.8rem; }
             .clock { font-size: 1rem; padding: 8px 15px; }
-            .btn-play-archive { padding: 8px 14px; font-size: 0.75rem; }
+            .btn-play-archive { padding: 10px 15px; font-size: 0.8rem; }
+            .archive-list li { padding: 12px; }
+            .archive-logo-img { max-height: 100px; }
         }
     </style>
 </head>
@@ -171,9 +200,13 @@
         </div>
 
         <div class="archive-container">
-            <div class="archive-title">📦 Архив — нажмите ▶ чтобы смотреть</div>
+            <!-- ЛОГОТИП КАК ЗАГОЛОВОК АРХИВА, ПО ЦЕНТРУ, НА ТЕМНО-СИНЕМ ФОНЕ -->
+            <div class="archive-logo-wrapper">
+                <img src="logo.png" alt="APXMR Архив" class="archive-logo-img">
+            </div>
+            
             <ul class="archive-list" id="archiveList">
-                <li style="color:#5a7a9a;">Здесь появятся мультфильмы после показа</li>
+                <li style="color:#5a7a9a; justify-content:center;">Здесь появятся мультфильмы после показа</li>
             </ul>
         </div>
     </div>
@@ -234,7 +267,7 @@
         function updateArchive(){
             var list = document.getElementById('archiveList');
             if(archive.length === 0){
-                list.innerHTML = '<li style="color:#5a7a9a;">Здесь появятся мультфильмы после показа</li>';
+                list.innerHTML = '<li style="color:#5a7a9a; justify-content:center;">Здесь появятся мультфильмы после показа</li>';
                 return;
             }
             var html = '';
@@ -242,10 +275,10 @@
                 var item = archive[i];
                 html += '<li>' +
                     '<span class="archive-info">' +
-                        '<span>'+item.title+'</span>' +
-                        '<span class="archive-time">Показан в '+item.time+'</span>' +
+                        '<span class="archive-name">' + item.title + '</span>' +
+                        '<span class="archive-time">Показан в ' + item.time + '</span>' +
                     '</span>' +
-                    '<button class="btn-play-archive" onclick="playFromArchive(\''+item.oid+'\',\''+item.id+'\',\''+item.title+'\')">▶ Смотреть</button>' +
+                    '<button class="btn-play-archive" onclick="playFromArchive(\'' + item.oid + '\',\'' + item.id + '\',\'' + item.title + '\')">▶ Смотреть</button>' +
                 '</li>';
             }
             list.innerHTML = html;
@@ -282,8 +315,7 @@
         }
 
         function playFromArchive(oid, id, title){
-            var videoKey = oid + '_' + id;
-            currentVideoKey = videoKey;
+            currentVideoKey = oid + '_' + id;
             
             document.getElementById('playerTitle').textContent = '▶ Смотрю из архива: ' + title;
             
