@@ -96,6 +96,28 @@
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
+        
+        /* АРХИВ */
+        .archive-container {
+            background-color: #0d1a2d;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            border: 1px solid #2a4a7a;
+        }
+        .archive-title { text-align: center; font-size: 1.5rem; margin-bottom: 20px; color: #ffd700; font-weight: 600; }
+        .archive-list { list-style: none; padding: 0; }
+        .archive-list li {
+            background-color: #1a2f4a;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .archive-list li .archive-time { color: #5a7a9a; font-size: 0.85rem; }
+        
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -128,6 +150,13 @@
                 <tbody id="scheduleBody"></tbody>
             </table>
         </div>
+
+        <div class="archive-container">
+            <div class="archive-title">📦 Архив прошедших мультфильмов</div>
+            <ul class="archive-list" id="archiveList">
+                <li style="color:#5a7a9a;">Здесь появятся мультфильмы после показа</li>
+            </ul>
+        </div>
     </div>
 
     <div class="footer">MY HOME • Телеканал для детей</div>
@@ -151,6 +180,7 @@
             { start: { h: 19, m: 0 }, end: { h: 21, m: 0 }, title: "Маша и Медведь (сборник)", oid: "-148105888", id: "456240360" }
         ];
 
+        var archive = [];
         var currentVideoKey = null;
 
         function pad(n){return String(n).padStart(2,'0')}
@@ -174,16 +204,41 @@
         }
         buildSchedule();
 
+        function updateArchive(){
+            var list = document.getElementById('archiveList');
+            if(archive.length === 0){
+                list.innerHTML = '<li style="color:#5a7a9a;">Здесь появятся мультфильмы после показа</li>';
+                return;
+            }
+            var html = '';
+            for(var i = archive.length - 1; i >= 0; i--){
+                var item = archive[i];
+                html += '<li><span>'+item.title+'</span><span class="archive-time">'+item.time+'</span></li>';
+            }
+            list.innerHTML = html;
+        }
+
+        function moveToArchive(item){
+            var now = new Date();
+            var timeStr = pad(now.getHours())+':'+pad(now.getMinutes());
+            archive.push({ title: item.title, time: timeStr });
+            
+            // Удаляем из расписания
+            var index = schedule.indexOf(item);
+            if(index !== -1){
+                schedule.splice(index, 1);
+            }
+            
+            updateArchive();
+            buildSchedule();
+        }
+
         function playVideo(item){
             var videoKey = item.oid + '_' + item.id;
-            
-            // НЕ перезагружаем, если видео уже играет
             if(currentVideoKey === videoKey) return;
             currentVideoKey = videoKey;
             
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
-            
-            // Добавляем autoplay=1 для автовоспроизведения
             document.getElementById('videoFrame').src = 'https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id + '&autoplay=1';
             
             schedule.forEach(function(s){
@@ -192,9 +247,6 @@
                 if(s.title === item.title){
                     el.textContent = '▶ Идёт';
                     el.className = 'status active';
-                } else {
-                    el.textContent = 'Ожидание';
-                    el.className = 'status upcoming';
                 }
             });
         }
@@ -203,13 +255,23 @@
             var now = new Date();
             var nowMinutes = timeToMinutes(now.getHours(), now.getMinutes());
             
-            for(var i = 0; i < schedule.length; i++){
+            // Проверяем прошедшие мультфильмы
+            for(var i = schedule.length - 1; i >= 0; i--){
                 var item = schedule[i];
-                var start = timeToMinutes(item.start.h, item.start.m);
                 var end = timeToMinutes(item.end.h, item.end.m);
+                if(nowMinutes >= end){
+                    moveToArchive(item);
+                }
+            }
+            
+            // Находим текущий мультфильм
+            for(var j = 0; j < schedule.length; j++){
+                var current = schedule[j];
+                var start = timeToMinutes(current.start.h, current.start.m);
+                var end2 = timeToMinutes(current.end.h, current.end.m);
                 
-                if(nowMinutes >= start && nowMinutes < end){
-                    playVideo(item);
+                if(nowMinutes >= start && nowMinutes < end2){
+                    playVideo(current);
                     return;
                 }
             }
@@ -220,7 +282,7 @@
         }
         
         checkSchedule();
-        setInterval(checkSchedule, 15000);
+        setInterval(checkSchedule, 30000);
     </script>
 
 </body>
