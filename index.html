@@ -42,26 +42,28 @@
         .player-section {
             background-color: #112240;
             border-radius: 20px;
-            padding: 20px;
+            padding: 30px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             border: 1px solid #1e3a5f;
+            text-align: center;
         }
-        .player-title { font-size: 1.4rem; margin-bottom: 15px; color: #ffd700; text-align: center; }
-        .video-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%;
-            height: 0;
-            overflow: hidden;
-            border-radius: 12px;
-            background-color: #000;
+        .player-title { font-size: 1.5rem; margin-bottom: 20px; color: #ffd700; }
+        .btn-watch {
+            display: inline-block;
+            background-color: #ff6b6b;
+            color: white;
+            text-decoration: none;
+            padding: 18px 35px;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            transition: all 0.3s;
         }
-        .video-container iframe {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border: none;
+        .btn-watch:hover {
+            background-color: #ff4444;
+            transform: scale(1.05);
         }
+        .notice { color: #5a7a9a; font-size: 0.85rem; margin-top: 15px; font-style: italic; }
         .schedule-container {
             background-color: #112240;
             border-radius: 20px;
@@ -73,7 +75,7 @@
         .schedule-table { width: 100%; border-collapse: collapse; font-size: 1rem; }
         .schedule-table th {
             background-color: #1e3a5f;
-            color: #ffffff;
+            color: #fff;
             padding: 12px 15px;
             text-align: left;
             font-weight: 600;
@@ -82,7 +84,7 @@
             border-bottom: 2px solid #2a4a7a;
         }
         .schedule-table td { padding: 12px 15px; border-bottom: 1px solid #1e3a5f; }
-        .time-cell { font-weight: 700; color: #ffd700; white-space: nowrap; min-width: 130px; }
+        .time-cell { font-weight: 700; color: #ffd700; min-width: 130px; }
         .show-cell { font-weight: 500; }
         .status {
             padding: 5px 12px;
@@ -96,7 +98,6 @@
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
-        .notice { text-align: center; color: #5a7a9a; font-size: 0.85rem; margin-top: 15px; font-style: italic; }
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -104,7 +105,7 @@
             .schedule-table { font-size: 0.85rem; }
             .time-cell { min-width: 90px; font-size: 0.8rem; }
             .clock { font-size: 1rem; padding: 8px 15px; }
-            .schedule-table th, .schedule-table td { padding: 8px 6px; }
+            .btn-watch { padding: 14px 25px; font-size: 1rem; }
         }
     </style>
 </head>
@@ -117,11 +118,9 @@
 
     <div class="main-container">
         <div class="player-section">
-            <div class="player-title" id="playerTitle">⏳ Загрузка...</div>
-            <div class="video-container">
-                <iframe id="videoFrame" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class="notice">🔒 Просмотр доступен только по расписанию</div>
+            <div class="player-title" id="playerTitle">⏳ Ожидание эфира...</div>
+            <a href="#" id="watchBtn" class="btn-watch" target="_blank" style="display:none;">▶ Смотреть мультфильм</a>
+            <div class="notice">Нажмите кнопку, чтобы смотреть</div>
         </div>
 
         <div class="schedule-container">
@@ -137,20 +136,20 @@
 
     <script>
         var schedule = [
-            { start: { h: 6, m: 0 }, end: { h: 7, m: 30 }, title: "Губка Боб Квадратные Штаны", videoId: "83gzUfs8VU4" },
-            { start: { h: 7, m: 30 }, end: { h: 8, m: 0 }, title: "Три кота", videoId: "C4sX4HvxgmY" },
-            { start: { h: 8, m: 0 }, end: { h: 9, m: 15 }, title: "Мими Мишки", videoId: "XEzMTmC1r1w" },
-            { start: { h: 9, m: 15 }, end: { h: 10, m: 0 }, title: "Медведь Валера", videoId: "C6Z2Zuq74gg" },
-            { start: { h: 10, m: 0 }, end: { h: 10, m: 30 }, title: "Ералаш", videoId: "PZSkHSWnu1g" },
-            { start: { h: 10, m: 30 }, end: { h: 12, m: 0 }, title: "Маша и Медведь", videoId: "dL2O7GMG3xQ" },
-            { start: { h: 12, m: 0 }, end: { h: 12, m: 30 }, title: "Приключения дельфинёнка Муму", videoId: "YwGxJJAIf80" },
-            { start: { h: 12, m: 30 }, end: { h: 13, m: 15 }, title: "Барбоскины", videoId: "9CDdPPlsUkk" },
-            { start: { h: 13, m: 15 }, end: { h: 14, m: 0 }, title: "Baby Shark", videoId: "kjCfzGzqlWA" },
-            { start: { h: 14, m: 0 }, end: { h: 15, m: 0 }, title: "Простоквашино", videoId: "t9tcwoIEp5s" },
-            { start: { h: 15, m: 0 }, end: { h: 17, m: 0 }, title: "Фиксики", videoId: "nyXgRvMxCQY" },
-            { start: { h: 17, m: 0 }, end: { h: 18, m: 0 }, title: "Сказочный патруль", videoId: "jzarHfhHG8c" },
-            { start: { h: 18, m: 0 }, end: { h: 19, m: 45 }, title: "Смешарики", videoId: "SOvrw-rysuQ" },
-            { start: { h: 19, m: 45 }, end: { h: 21, m: 0 }, title: "Белка и Стрелка", videoId: "-0CD5-XMqvI" }
+            { start: { h: 6, m: 0 }, end: { h: 7, m: 30 }, title: "Губка Боб Квадратные Штаны", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 7, m: 30 }, end: { h: 8, m: 0 }, title: "Три кота", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 8, m: 0 }, end: { h: 9, m: 15 }, title: "Мими Мишки", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 9, m: 15 }, end: { h: 10, m: 0 }, title: "Медведь Валера", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 10, m: 0 }, end: { h: 10, m: 30 }, title: "Ералаш", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 10, m: 30 }, end: { h: 12, m: 0 }, title: "Маша и Медведь", url: "https://rutube.ru/video/f6fca45c62d02f13c31290dc9ecf748e/" },
+            { start: { h: 12, m: 0 }, end: { h: 12, m: 30 }, title: "Приключения дельфинёнка Муму", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 12, m: 30 }, end: { h: 13, m: 15 }, title: "Барбоскины", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 13, m: 15 }, end: { h: 14, m: 0 }, title: "Baby Shark", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 14, m: 0 }, end: { h: 15, m: 0 }, title: "Простоквашино", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 15, m: 0 }, end: { h: 17, m: 0 }, title: "Фиксики", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 17, m: 0 }, end: { h: 18, m: 0 }, title: "Сказочный патруль", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 18, m: 0 }, end: { h: 19, m: 45 }, title: "Смешарики", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
+            { start: { h: 19, m: 45 }, end: { h: 21, m: 0 }, title: "Белка и Стрелка", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" }
         ];
 
         function pad(n){return String(n).padStart(2,'0')}
@@ -176,8 +175,9 @@
 
         function playVideo(item){
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
-            var iframe = document.getElementById('videoFrame');
-            iframe.src = 'https://www.youtube.com/embed/' + item.videoId + '?autoplay=1&playsinline=1';
+            var btn = document.getElementById('watchBtn');
+            btn.href = item.url;
+            btn.style.display = 'inline-block';
             
             schedule.forEach(function(s){
                 var id = s.title.replace(/\s+/g,'-');
@@ -185,9 +185,6 @@
                 if(s.title === item.title){
                     el.textContent = '▶ Идёт';
                     el.className = 'status active';
-                } else {
-                    el.textContent = 'Ожидание';
-                    el.className = 'status upcoming';
                 }
             });
         }
@@ -208,7 +205,7 @@
             }
             
             document.getElementById('playerTitle').textContent = '⏸ Эфир завершён';
-            document.getElementById('videoFrame').src = '';
+            document.getElementById('watchBtn').style.display = 'none';
         }
         
         checkSchedule();
