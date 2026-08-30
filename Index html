@@ -117,9 +117,9 @@
 
     <div class="main-container">
         <div class="player-section">
-            <div class="player-title" id="playerTitle">⏳ Ожидание эфира...</div>
+            <div class="player-title" id="playerTitle">⏳ Загрузка...</div>
             <div class="video-container">
-                <iframe id="videoFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                <iframe id="videoFrame" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="notice">🔒 Просмотр доступен только по расписанию</div>
         </div>
@@ -133,7 +133,7 @@
         </div>
     </div>
 
-    <div class="footer">MY HOME • Телеканал для детей • Автопоказ по расписанию</div>
+    <div class="footer">MY HOME • Телеканал для детей</div>
 
     <script>
         var schedule = [
@@ -176,7 +176,8 @@
 
         function playVideo(item){
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
-            document.getElementById('videoFrame').src = 'https://www.youtube.com/embed/' + item.videoId + '?autoplay=1';
+            var iframe = document.getElementById('videoFrame');
+            iframe.src = 'https://www.youtube.com/embed/' + item.videoId + '?autoplay=1&playsinline=1';
             
             schedule.forEach(function(s){
                 var id = s.title.replace(/\s+/g,'-');
@@ -184,6 +185,9 @@
                 if(s.title === item.title){
                     el.textContent = '▶ Идёт';
                     el.className = 'status active';
+                } else {
+                    el.textContent = 'Ожидание';
+                    el.className = 'status upcoming';
                 }
             });
         }
@@ -198,20 +202,17 @@
                 var end = timeToMinutes(item.end.h, item.end.m);
                 
                 if(nowMinutes >= start && nowMinutes < end){
-                    var id = item.title.replace(/\s+/g,'-');
-                    var statusEl = document.getElementById('status-'+id);
-                    if(statusEl && statusEl.textContent !== '▶ Идёт'){
-                        playVideo(item);
-                    }
+                    playVideo(item);
                     return;
                 }
             }
             
-            document.getElementById('playerTitle').textContent = '⏸ Эфир завершён. Смотрите нас завтра с 6:00!';
+            document.getElementById('playerTitle').textContent = '⏸ Эфир завершён';
             document.getElementById('videoFrame').src = '';
         }
-        setInterval(checkSchedule, 30000);
+        
         checkSchedule();
+        setInterval(checkSchedule, 60000);
     </script>
 
 </body>
