@@ -96,8 +96,6 @@
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
-        
-        /* АРХИВ */
         .archive-container {
             background-color: #0d1a2d;
             border-radius: 20px;
@@ -105,27 +103,6 @@
             border: 1px solid #2a4a7a;
         }
         .archive-title { text-align: center; font-size: 1.5rem; margin-bottom: 20px; color: #ffd700; font-weight: 600; }
-        
-        /* Стили для ЛОГОТИПА-КАРТИНКИ как заголовка архива */
-        .archive-logo-wrapper {
-            background-color: #0d1a2d; /* Темно-синий фон как у всего архива */
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            text-align: center;
-            border: 2px dashed #2a4a7a; /* Пунктирная рамка чтобы выделить */
-        }
-        .archive-logo-img {
-            max-width: 100%;
-            height: auto;
-            max-height: 150px; /* Максимальная высота логотипа */
-            display: inline-block;
-            
-            /* Хитрость: делаем белый фон картинки прозрачным, чтобы смешался с синим */
-            mix-blend-mode: screen; 
-            filter: brightness(1.1) drop-shadow(0 0 8px rgba(0, 0, 0, 0.8));
-        }
-        
         .archive-list { list-style: none; padding: 0; }
         .archive-list li {
             background-color: #1a2f4a;
@@ -139,9 +116,8 @@
             flex-wrap: wrap;
         }
         .archive-info { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 150px; }
-        .archive-info .archive-name { font-weight: 700; font-size: 1rem; }
-        .archive-info .archive-time { color: #5a7a9a; font-size: 0.8rem; }
-        
+        .archive-name { font-weight: 700; font-size: 1rem; }
+        .archive-time { color: #5a7a9a; font-size: 0.8rem; }
         .btn-play-archive {
             background-color: #ff6b6b;
             color: white;
@@ -154,15 +130,7 @@
             transition: all 0.3s;
             white-space: nowrap;
         }
-        .btn-play-archive:hover {
-            background-color: #ff4444;
-            transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(255,107,107,0.4);
-        }
-        .btn-play-archive:active {
-            transform: scale(0.95);
-        }
-        
+        .btn-play-archive:hover { background-color: #ff4444; transform: scale(1.05); }
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -171,8 +139,6 @@
             .time-cell { min-width: 90px; font-size: 0.8rem; }
             .clock { font-size: 1rem; padding: 8px 15px; }
             .btn-play-archive { padding: 10px 15px; font-size: 0.8rem; }
-            .archive-list li { padding: 12px; }
-            .archive-logo-img { max-height: 100px; }
         }
     </style>
 </head>
@@ -200,11 +166,7 @@
         </div>
 
         <div class="archive-container">
-            <!-- ЛОГОТИП КАК ЗАГОЛОВОК АРХИВА, ПО ЦЕНТРУ, НА ТЕМНО-СИНЕМ ФОНЕ -->
-            <div class="archive-logo-wrapper">
-                <img src="logo.png" alt="APXMR Архив" class="archive-logo-img">
-            </div>
-            
+            <div class="archive-title">📦 Архив прошедших мультфильмов</div>
             <ul class="archive-list" id="archiveList">
                 <li style="color:#5a7a9a; justify-content:center;">Здесь появятся мультфильмы после показа</li>
             </ul>
@@ -242,6 +204,7 @@
 
         var archive = [];
         var currentVideoKey = null;
+        var isArchivePlaying = false;
 
         function pad(n){return String(n).padStart(2,'0')}
         function timeToMinutes(h,m){return h*60+m}
@@ -278,10 +241,21 @@
                         '<span class="archive-name">' + item.title + '</span>' +
                         '<span class="archive-time">Показан в ' + item.time + '</span>' +
                     '</span>' +
-                    '<button class="btn-play-archive" onclick="playFromArchive(\'' + item.oid + '\',\'' + item.id + '\',\'' + item.title + '\')">▶ Смотреть</button>' +
+                    '<button class="btn-play-archive" data-oid="' + item.oid + '" data-id="' + item.id + '" data-title="' + item.title + '">▶ Смотреть</button>' +
                 '</li>';
             }
             list.innerHTML = html;
+            
+            // Добавляем обработчики кнопкам
+            var buttons = list.querySelectorAll('.btn-play-archive');
+            for(var b = 0; b < buttons.length; b++){
+                buttons[b].addEventListener('click', function(){
+                    var oid = this.getAttribute('data-oid');
+                    var id = this.getAttribute('data-id');
+                    var title = this.getAttribute('data-title');
+                    playFromArchive(oid, id, title);
+                });
+            }
         }
 
         function moveToArchive(item){
@@ -296,13 +270,12 @@
 
         function playVideo(item){
             var videoKey = item.oid + '_' + item.id;
-            if(currentVideoKey === videoKey) return;
+            if(currentVideoKey === videoKey && !isArchivePlaying) return;
             currentVideoKey = videoKey;
+            isArchivePlaying = false;
             
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
-            
-            var container = document.getElementById('videoContainer');
-            container.innerHTML = '<iframe src="https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+            document.getElementById('videoContainer').innerHTML = '<iframe src="https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
             
             schedule.forEach(function(s){
                 var id = s.title.replace(/\s+/g,'-');
@@ -316,16 +289,17 @@
 
         function playFromArchive(oid, id, title){
             currentVideoKey = oid + '_' + id;
+            isArchivePlaying = true;
             
             document.getElementById('playerTitle').textContent = '▶ Смотрю из архива: ' + title;
-            
-            var container = document.getElementById('videoContainer');
-            container.innerHTML = '<iframe src="https://vkvideo.ru/video_ext.php?oid=' + oid + '&id=' + id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+            document.getElementById('videoContainer').innerHTML = '<iframe src="https://vkvideo.ru/video_ext.php?oid=' + oid + '&id=' + id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
             
             document.getElementById('playerSection').scrollIntoView({ behavior: 'smooth' });
         }
 
         function checkSchedule(){
+            if(isArchivePlaying) return; // Не мешаем, если смотрят архив
+            
             var now = new Date();
             var nowMinutes = timeToMinutes(now.getHours(), now.getMinutes());
             
