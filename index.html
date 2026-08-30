@@ -96,13 +96,10 @@
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
-        
-        /* АРХИВ */
         .archive-container {
             background-color: #0d1a2d;
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             border: 1px solid #2a4a7a;
         }
         .archive-title { text-align: center; font-size: 1.5rem; margin-bottom: 20px; color: #ffd700; font-weight: 600; }
@@ -114,10 +111,8 @@
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
         }
         .archive-list li .archive-time { color: #5a7a9a; font-size: 0.85rem; }
-        
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -138,7 +133,7 @@
     <div class="main-container">
         <div class="player-section">
             <div class="player-title" id="playerTitle">⏳ Ожидание эфира...</div>
-            <div class="video-container">
+            <div class="video-container" id="videoContainer">
                 <iframe id="videoFrame" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
             </div>
         </div>
@@ -163,21 +158,29 @@
 
     <script>
         var schedule = [
-            { start: { h: 6, m: 0 }, end: { h: 7, m: 0 }, title: "Губка Боб", oid: "-168237038", id: "456241148" },
-            { start: { h: 7, m: 0 }, end: { h: 8, m: 0 }, title: "Три кота", oid: "-240863018", id: "456239018" },
-            { start: { h: 8, m: 0 }, end: { h: 9, m: 0 }, title: "Мими Мишки", oid: "-40367885", id: "456243591" },
-            { start: { h: 9, m: 0 }, end: { h: 10, m: 0 }, title: "Медведь Валера", oid: "-53325318", id: "456239936" },
-            { start: { h: 10, m: 0 }, end: { h: 10, m: 30 }, title: "Ералаш", oid: "-81058206", id: "456239906" },
-            { start: { h: 10, m: 30 }, end: { h: 11, m: 0 }, title: "Маша и Медведь", oid: "-22277933", id: "456239401" },
-            { start: { h: 11, m: 0 }, end: { h: 12, m: 0 }, title: "Дельфинёнок Муму", oid: "-19844843", id: "163168752" },
-            { start: { h: 12, m: 0 }, end: { h: 13, m: 0 }, title: "Барбоскины", oid: "-61911646", id: "456241371" },
-            { start: { h: 13, m: 0 }, end: { h: 14, m: 0 }, title: "Baby Shark", oid: "-226035755", id: "456249133" },
-            { start: { h: 14, m: 0 }, end: { h: 15, m: 0 }, title: "Простоквашино", oid: "-73154028", id: "456245190" },
-            { start: { h: 15, m: 0 }, end: { h: 16, m: 0 }, title: "Фиксики", oid: "-133569542", id: "456239019" },
-            { start: { h: 16, m: 0 }, end: { h: 17, m: 0 }, title: "Сказочный патруль", oid: "-131738248", id: "456239996" },
+            { start: { h: 6, m: 0 }, end: { h: 7, m: 0 }, title: "Ум и Хрум", oid: "-222323218", id: "456239252" },
+            { start: { h: 7, m: 0 }, end: { h: 8, m: 0 }, title: "Царевны", oid: "-117945886", id: "456240677" },
+            { start: { h: 8, m: 0 }, end: { h: 9, m: 0 }, title: "Лео и Тиг", oid: "-40367885", id: "456244016" },
+            { start: { h: 9, m: 0 }, end: { h: 9, m: 24 }, title: "Аркадий Паровозов (1)", oid: "-40367885", id: "456243361" },
+            { start: { h: 9, m: 24 }, end: { h: 9, m: 48 }, title: "Аркадий Паровозов (2)", oid: "-40367885", id: "456243704" },
+            { start: { h: 9, m: 48 }, end: { h: 10, m: 12 }, title: "Аркадий Паровозов (3)", oid: "-196938724", id: "456239060" },
+            { start: { h: 10, m: 12 }, end: { h: 10, m: 18 }, title: "Лунтик (1)", oid: "-49620997", id: "456241389" },
+            { start: { h: 10, m: 18 }, end: { h: 10, m: 24 }, title: "Лунтик (2)", oid: "-49620997", id: "456241640" },
+            { start: { h: 10, m: 24 }, end: { h: 10, m: 30 }, title: "Лунтик (3)", oid: "-49620997", id: "456241388" },
+            { start: { h: 10, m: 30 }, end: { h: 10, m: 36 }, title: "Лунтик (4)", oid: "-49620997", id: "456241606" },
+            { start: { h: 10, m: 36 }, end: { h: 10, m: 42 }, title: "Лунтик (5)", oid: "-49620997", id: "456241340" },
+            { start: { h: 10, m: 42 }, end: { h: 10, m: 48 }, title: "Лунтик (6)", oid: "-235114742", id: "456239137" },
+            { start: { h: 10, m: 48 }, end: { h: 10, m: 54 }, title: "Лунтик (7)", oid: "-49620997", id: "456241629" },
+            { start: { h: 10, m: 54 }, end: { h: 11, m: 0 }, title: "Лунтик (8)", oid: "-49620997", id: "456241610" },
+            { start: { h: 11, m: 0 }, end: { h: 12, m: 0 }, title: "Щенячий патруль", oid: "-191195780", id: "456243639" },
+            { start: { h: 12, m: 0 }, end: { h: 13, m: 0 }, title: "Медведь Валера", oid: "-53325318", id: "456239936" },
+            { start: { h: 13, m: 0 }, end: { h: 14, m: 0 }, title: "Малышарики", oid: "-106614704", id: "456240934" },
+            { start: { h: 14, m: 0 }, end: { h: 15, m: 0 }, title: "Сказочный патруль", oid: "-131738248", id: "456239996" },
+            { start: { h: 15, m: 0 }, end: { h: 16, m: 0 }, title: "Маша и Медведь", oid: "-22277933", id: "456239401" },
+            { start: { h: 16, m: 0 }, end: { h: 17, m: 0 }, title: "Фиксики", oid: "-133569542", id: "456239019" },
             { start: { h: 17, m: 0 }, end: { h: 18, m: 0 }, title: "Смешарики", oid: "-21665793", id: "456243351" },
             { start: { h: 18, m: 0 }, end: { h: 19, m: 0 }, title: "Белка и Стрелка", oid: "-24738313", id: "456270383" },
-            { start: { h: 19, m: 0 }, end: { h: 21, m: 0 }, title: "Маша и Медведь (сборник)", oid: "-148105888", id: "456240360" }
+            { start: { h: 19, m: 0 }, end: { h: 19, m: 30 }, title: "Колыбельные", oid: "-229807497", id: "456239177" }
         ];
 
         var archive = [];
@@ -222,13 +225,8 @@
             var now = new Date();
             var timeStr = pad(now.getHours())+':'+pad(now.getMinutes());
             archive.push({ title: item.title, time: timeStr });
-            
-            // Удаляем из расписания
             var index = schedule.indexOf(item);
-            if(index !== -1){
-                schedule.splice(index, 1);
-            }
-            
+            if(index !== -1) schedule.splice(index, 1);
             updateArchive();
             buildSchedule();
         }
@@ -239,7 +237,9 @@
             currentVideoKey = videoKey;
             
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
-            document.getElementById('videoFrame').src = 'https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id + '&autoplay=1';
+            
+            var container = document.getElementById('videoContainer');
+            container.innerHTML = '<iframe id="videoFrame" src="https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
             
             schedule.forEach(function(s){
                 var id = s.title.replace(/\s+/g,'-');
@@ -255,7 +255,6 @@
             var now = new Date();
             var nowMinutes = timeToMinutes(now.getHours(), now.getMinutes());
             
-            // Проверяем прошедшие мультфильмы
             for(var i = schedule.length - 1; i >= 0; i--){
                 var item = schedule[i];
                 var end = timeToMinutes(item.end.h, item.end.m);
@@ -264,7 +263,6 @@
                 }
             }
             
-            // Находим текущий мультфильм
             for(var j = 0; j < schedule.length; j++){
                 var current = schedule[j];
                 var start = timeToMinutes(current.start.h, current.start.m);
@@ -278,11 +276,11 @@
             
             currentVideoKey = null;
             document.getElementById('playerTitle').textContent = '⏸ Эфир завершён';
-            document.getElementById('videoFrame').src = '';
+            document.getElementById('videoContainer').innerHTML = '';
         }
         
         checkSchedule();
-        setInterval(checkSchedule, 30000);
+        setInterval(checkSchedule, 10000);
     </script>
 
 </body>
