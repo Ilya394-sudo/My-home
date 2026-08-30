@@ -42,28 +42,26 @@
         .player-section {
             background-color: #112240;
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.5);
             border: 1px solid #1e3a5f;
-            text-align: center;
         }
-        .player-title { font-size: 1.5rem; margin-bottom: 20px; color: #ffd700; }
-        .btn-watch {
-            display: inline-block;
-            background-color: #ff6b6b;
-            color: white;
-            text-decoration: none;
-            padding: 18px 35px;
-            border-radius: 40px;
-            font-weight: 700;
-            font-size: 1.2rem;
-            transition: all 0.3s;
+        .player-title { font-size: 1.4rem; margin-bottom: 15px; color: #ffd700; text-align: center; }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #000;
         }
-        .btn-watch:hover {
-            background-color: #ff4444;
-            transform: scale(1.05);
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
         }
-        .notice { color: #5a7a9a; font-size: 0.85rem; margin-top: 15px; font-style: italic; }
         .schedule-container {
             background-color: #112240;
             border-radius: 20px;
@@ -105,7 +103,6 @@
             .schedule-table { font-size: 0.85rem; }
             .time-cell { min-width: 90px; font-size: 0.8rem; }
             .clock { font-size: 1rem; padding: 8px 15px; }
-            .btn-watch { padding: 14px 25px; font-size: 1rem; }
         }
     </style>
 </head>
@@ -119,8 +116,9 @@
     <div class="main-container">
         <div class="player-section">
             <div class="player-title" id="playerTitle">⏳ Ожидание эфира...</div>
-            <a href="#" id="watchBtn" class="btn-watch" target="_blank" style="display:none;">▶ Смотреть мультфильм</a>
-            <div class="notice">Нажмите кнопку, чтобы смотреть</div>
+            <div class="video-container">
+                <iframe id="videoFrame" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
+            </div>
         </div>
 
         <div class="schedule-container">
@@ -136,20 +134,21 @@
 
     <script>
         var schedule = [
-            { start: { h: 6, m: 0 }, end: { h: 7, m: 30 }, title: "Губка Боб Квадратные Штаны", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 7, m: 30 }, end: { h: 8, m: 0 }, title: "Три кота", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 8, m: 0 }, end: { h: 9, m: 15 }, title: "Мими Мишки", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 9, m: 15 }, end: { h: 10, m: 0 }, title: "Медведь Валера", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 10, m: 0 }, end: { h: 10, m: 30 }, title: "Ералаш", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 10, m: 30 }, end: { h: 12, m: 0 }, title: "Маша и Медведь", url: "https://rutube.ru/video/f6fca45c62d02f13c31290dc9ecf748e/" },
-            { start: { h: 12, m: 0 }, end: { h: 12, m: 30 }, title: "Приключения дельфинёнка Муму", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 12, m: 30 }, end: { h: 13, m: 15 }, title: "Барбоскины", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 13, m: 15 }, end: { h: 14, m: 0 }, title: "Baby Shark", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 14, m: 0 }, end: { h: 15, m: 0 }, title: "Простоквашино", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 15, m: 0 }, end: { h: 17, m: 0 }, title: "Фиксики", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 17, m: 0 }, end: { h: 18, m: 0 }, title: "Сказочный патруль", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 18, m: 0 }, end: { h: 19, m: 45 }, title: "Смешарики", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" },
-            { start: { h: 19, m: 45 }, end: { h: 21, m: 0 }, title: "Белка и Стрелка", url: "https://rutube.ru/video/86e14fe2a4e364dafbe6a09cefbaf413/" }
+            { start: { h: 6, m: 0 }, end: { h: 7, m: 0 }, title: "Губка Боб", oid: "-168237038", id: "456241148" },
+            { start: { h: 7, m: 0 }, end: { h: 8, m: 0 }, title: "Три кота", oid: "-240863018", id: "456239018" },
+            { start: { h: 8, m: 0 }, end: { h: 9, m: 0 }, title: "Мими Мишки", oid: "-40367885", id: "456243591" },
+            { start: { h: 9, m: 0 }, end: { h: 10, m: 0 }, title: "Медведь Валера", oid: "-53325318", id: "456239936" },
+            { start: { h: 10, m: 0 }, end: { h: 10, m: 30 }, title: "Ералаш", oid: "-81058206", id: "456239906" },
+            { start: { h: 10, m: 30 }, end: { h: 11, m: 0 }, title: "Маша и Медведь", oid: "-22277933", id: "456239401" },
+            { start: { h: 11, m: 0 }, end: { h: 12, m: 0 }, title: "Дельфинёнок Муму", oid: "-19844843", id: "163168752" },
+            { start: { h: 12, m: 0 }, end: { h: 13, m: 0 }, title: "Барбоскины", oid: "-61911646", id: "456241371" },
+            { start: { h: 13, m: 0 }, end: { h: 14, m: 0 }, title: "Baby Shark", oid: "-226035755", id: "456249133" },
+            { start: { h: 14, m: 0 }, end: { h: 15, m: 0 }, title: "Простоквашино", oid: "-73154028", id: "456245190" },
+            { start: { h: 15, m: 0 }, end: { h: 16, m: 0 }, title: "Фиксики", oid: "-133569542", id: "456239019" },
+            { start: { h: 16, m: 0 }, end: { h: 17, m: 0 }, title: "Сказочный патруль", oid: "-131738248", id: "456239996" },
+            { start: { h: 17, m: 0 }, end: { h: 18, m: 0 }, title: "Смешарики", oid: "-21665793", id: "456243351" },
+            { start: { h: 18, m: 0 }, end: { h: 19, m: 0 }, title: "Белка и Стрелка", oid: "-24738313", id: "456270383" },
+            { start: { h: 19, m: 0 }, end: { h: 21, m: 0 }, title: "Маша и Медведь (сборник)", oid: "-148105888", id: "456240360" }
         ];
 
         function pad(n){return String(n).padStart(2,'0')}
@@ -175,9 +174,7 @@
 
         function playVideo(item){
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
-            var btn = document.getElementById('watchBtn');
-            btn.href = item.url;
-            btn.style.display = 'inline-block';
+            document.getElementById('videoFrame').src = 'https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id;
             
             schedule.forEach(function(s){
                 var id = s.title.replace(/\s+/g,'-');
@@ -205,7 +202,7 @@
             }
             
             document.getElementById('playerTitle').textContent = '⏸ Эфир завершён';
-            document.getElementById('watchBtn').style.display = 'none';
+            document.getElementById('videoFrame').src = '';
         }
         
         checkSchedule();
