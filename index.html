@@ -96,6 +96,8 @@
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
+        
+        /* АРХИВ */
         .archive-container {
             background-color: #0d1a2d;
             border-radius: 20px;
@@ -111,8 +113,29 @@
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
+        .archive-list li .archive-info { display: flex; flex-direction: column; gap: 5px; }
         .archive-list li .archive-time { color: #5a7a9a; font-size: 0.85rem; }
+        .btn-play-archive {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .btn-play-archive:hover {
+            background-color: #ff4444;
+            transform: scale(1.05);
+        }
+        
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -120,6 +143,7 @@
             .schedule-table { font-size: 0.85rem; }
             .time-cell { min-width: 90px; font-size: 0.8rem; }
             .clock { font-size: 1rem; padding: 8px 15px; }
+            .btn-play-archive { padding: 6px 12px; font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -215,8 +239,15 @@
             }
             var html = '';
             for(var i = archive.length - 1; i >= 0; i--){
-                var item = archive[i];
-                html += '<li><span>'+item.title+'</span><span class="archive-time">'+item.time+'</span></li>';
+                (function(item){
+                    html += '<li>' +
+                        '<span class="archive-info">' +
+                            '<span>'+item.title+'</span>' +
+                            '<span class="archive-time">Показан в '+item.time+'</span>' +
+                        '</span>' +
+                        '<button class="btn-play-archive" onclick="playFromArchive(\''+item.oid+'\',\''+item.id+'\',\''+item.title+'\')">▶ Смотреть</button>' +
+                    '</li>';
+                })(archive[i]);
             }
             list.innerHTML = html;
         }
@@ -224,7 +255,7 @@
         function moveToArchive(item){
             var now = new Date();
             var timeStr = pad(now.getHours())+':'+pad(now.getMinutes());
-            archive.push({ title: item.title, time: timeStr });
+            archive.push({ title: item.title, time: timeStr, oid: item.oid, id: item.id });
             var index = schedule.indexOf(item);
             if(index !== -1) schedule.splice(index, 1);
             updateArchive();
@@ -249,6 +280,20 @@
                     el.className = 'status active';
                 }
             });
+        }
+
+        // Включение мультфильма из архива
+        function playFromArchive(oid, id, title){
+            var videoKey = oid + '_' + id;
+            currentVideoKey = videoKey;
+            
+            document.getElementById('playerTitle').textContent = '▶ Смотрю из архива: ' + title;
+            
+            var container = document.getElementById('videoContainer');
+            container.innerHTML = '<iframe id="videoFrame" src="https://vkvideo.ru/video_ext.php?oid=' + oid + '&id=' + id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+            
+            // Прокручиваем к плееру
+            document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
         }
 
         function checkSchedule(){
