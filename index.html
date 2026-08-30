@@ -96,8 +96,6 @@
         .status.active { background-color: #ff6b6b; color: white; }
         .status.upcoming { background-color: #2a4a7a; color: #a0c4ff; }
         .status.ended { background-color: #1a2f4a; color: #5a7a9a; }
-        
-        /* АРХИВ */
         .archive-container {
             background-color: #0d1a2d;
             border-radius: 20px;
@@ -123,11 +121,11 @@
             background-color: #ff6b6b;
             color: white;
             border: none;
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 700;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             transition: all 0.3s;
             white-space: nowrap;
         }
@@ -135,7 +133,9 @@
             background-color: #ff4444;
             transform: scale(1.05);
         }
-        
+        .btn-play-archive:active {
+            transform: scale(0.95);
+        }
         .footer { margin-top: 25px; font-size: 0.85rem; color: #5a7a9a; text-align: center; padding: 15px; }
         @media (max-width: 600px) {
             body { padding: 10px; }
@@ -143,7 +143,7 @@
             .schedule-table { font-size: 0.85rem; }
             .time-cell { min-width: 90px; font-size: 0.8rem; }
             .clock { font-size: 1rem; padding: 8px 15px; }
-            .btn-play-archive { padding: 6px 12px; font-size: 0.75rem; }
+            .btn-play-archive { padding: 8px 14px; font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -155,7 +155,7 @@
     </div>
 
     <div class="main-container">
-        <div class="player-section">
+        <div class="player-section" id="playerSection">
             <div class="player-title" id="playerTitle">⏳ Ожидание эфира...</div>
             <div class="video-container" id="videoContainer">
                 <iframe id="videoFrame" src="" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>
@@ -171,7 +171,7 @@
         </div>
 
         <div class="archive-container">
-            <div class="archive-title">📦 Архив прошедших мультфильмов</div>
+            <div class="archive-title">📦 Архив — нажмите ▶ чтобы смотреть</div>
             <ul class="archive-list" id="archiveList">
                 <li style="color:#5a7a9a;">Здесь появятся мультфильмы после показа</li>
             </ul>
@@ -239,15 +239,14 @@
             }
             var html = '';
             for(var i = archive.length - 1; i >= 0; i--){
-                (function(item){
-                    html += '<li>' +
-                        '<span class="archive-info">' +
-                            '<span>'+item.title+'</span>' +
-                            '<span class="archive-time">Показан в '+item.time+'</span>' +
-                        '</span>' +
-                        '<button class="btn-play-archive" onclick="playFromArchive(\''+item.oid+'\',\''+item.id+'\',\''+item.title+'\')">▶ Смотреть</button>' +
-                    '</li>';
-                })(archive[i]);
+                var item = archive[i];
+                html += '<li>' +
+                    '<span class="archive-info">' +
+                        '<span>'+item.title+'</span>' +
+                        '<span class="archive-time">Показан в '+item.time+'</span>' +
+                    '</span>' +
+                    '<button class="btn-play-archive" onclick="playFromArchive(\''+item.oid+'\',\''+item.id+'\',\''+item.title+'\')">▶ Смотреть</button>' +
+                '</li>';
             }
             list.innerHTML = html;
         }
@@ -270,7 +269,7 @@
             document.getElementById('playerTitle').textContent = '▶ Сейчас идёт: ' + item.title;
             
             var container = document.getElementById('videoContainer');
-            container.innerHTML = '<iframe id="videoFrame" src="https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+            container.innerHTML = '<iframe src="https://vkvideo.ru/video_ext.php?oid=' + item.oid + '&id=' + item.id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
             
             schedule.forEach(function(s){
                 var id = s.title.replace(/\s+/g,'-');
@@ -282,7 +281,6 @@
             });
         }
 
-        // Включение мультфильма из архива
         function playFromArchive(oid, id, title){
             var videoKey = oid + '_' + id;
             currentVideoKey = videoKey;
@@ -290,10 +288,9 @@
             document.getElementById('playerTitle').textContent = '▶ Смотрю из архива: ' + title;
             
             var container = document.getElementById('videoContainer');
-            container.innerHTML = '<iframe id="videoFrame" src="https://vkvideo.ru/video_ext.php?oid=' + oid + '&id=' + id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+            container.innerHTML = '<iframe src="https://vkvideo.ru/video_ext.php?oid=' + oid + '&id=' + id + '&autoplay=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
             
-            // Прокручиваем к плееру
-            document.querySelector('.player-section').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('playerSection').scrollIntoView({ behavior: 'smooth' });
         }
 
         function checkSchedule(){
